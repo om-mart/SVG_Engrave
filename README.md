@@ -1,4 +1,5 @@
 # Image to Rubber Stamp SVG Generator
+![Stamp process example](example.png) <br>
 
 Created as a group project for my university's computer vision class.
 This Python script takes a raster image, lets you live-tune Canny thresholds, Gaussian blur, and
