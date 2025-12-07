@@ -2,25 +2,7 @@ import cv2 as cv
 import svgwrite
 import numpy as np
 import os
-from typing import Optional, Tuple
-
-
-def get_image_filename(image_name: str, extensions: list[str]) -> Optional[str]:
-    """
-    Finds the image file matching the provided name and supported extensions.
-
-    Args:
-        image_name (str): The name of the image without an extension.
-        extensions (list[str]): List of supported file extensions.
-
-    Returns:
-        Optional[str]: The full filename if found, otherwise None.
-    """
-    for ext in extensions:
-        possible_file = image_name + ext
-        if os.path.isfile(possible_file):
-            return possible_file
-    return None
+from typing import Tuple
 
 
 def resize_image(image: np.ndarray, max_width: int, max_height: int) -> np.ndarray:
@@ -94,7 +76,6 @@ def process_image(image_filename: str, svg_height_mm: float, svg_width_mm: float
     cv.createTrackbar('Gaussian Kernel', win_name, 5, 50, lambda x: None)  # Must be odd for Gaussian Blur
 
     # Set a fixed default kernel for dilation
-    default_dilation_kernel = cv.getStructuringElement(cv.MORPH_RECT, (3, 3))
     dilation_iter = 1  # Fixed iteration count
 
     while True:
@@ -182,13 +163,10 @@ def save_svg(filename: str, width_mm: float, height_mm: float, stencil_canvas: n
 
 if __name__ == "__main__":
     # Main script to execute the appropriate function based on user input
-    image_name = input("Enter the image name without extension (e.g., 'frog'): ")
-    supported_extensions = ['.jpg', '.jpeg', '.png', '.bmp', '.tiff']
+    image_filename = input("Enter the image path (e.g., 'images/image.jpg'): ")
 
-    image_filename = get_image_filename(image_name, supported_extensions)
-
-    if image_filename is None:
-        print(f"Error: Unable to find an image file named '{image_name}' with any of the supported extensions: {supported_extensions}")
+    if not os.path.isfile(image_filename):
+        print(f"Error: Unable to find the image file '{image_filename}'. Please check the path and extension and try again.")
     else:
         svg_height_mm, svg_width_mm = get_user_dimensions()
         process_image(image_filename, svg_height_mm, svg_width_mm)
